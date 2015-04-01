@@ -1,5 +1,6 @@
 package body7.ming.sensordatalog.wear;
 
+import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -38,6 +39,8 @@ public class WearableSensorService extends WearableListenerService implements Se
     public void onCreate() {
         super.onCreate();
         mDeviceClient = DeviceClient.getInstance(this);
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+
     }
 
     @Override
@@ -85,7 +88,11 @@ public class WearableSensorService extends WearableListenerService implements Se
     }
 
     private void addSensorListener(){
-
+        for(Sensor s : listenedSensorList){
+            mSensorManager.registerListener(this,
+                    mSensorManager.getDefaultSensor(s.getType()),
+                    SensorManager.SENSOR_DELAY_NORMAL);
+        }
     }
 
     private void deleteSensorListener(){

@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/AndroidWearSensorData.iml" filepath="$PROJECT_DIR$/AndroidWearSensorData.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/sensordatalog/sensordatalog.iml" filepath="$PROJECT_DIR$/sensordatalog/sensordatalog.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sensorlog/sensorlog.iml" filepath="$PROJECT_DIR$/sensorlog/sensorlog.iml" />
     </modules>
   </component>
 </project>

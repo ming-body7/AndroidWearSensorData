@@ -1,8 +1,10 @@
 package body7.ming.sensordatalog.wear;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.util.Log;
 
+import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.wearable.DataApi;
@@ -18,7 +20,7 @@ import body7.ming.sensordatalog.shared.SensorData;
 /***
  * manage the connection and data transfer
  */
-public class DeviceClient {
+public class DeviceClient implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private static final String TAG = "Wearable Device Client";
 
@@ -28,6 +30,7 @@ public class DeviceClient {
         if(instance == null){
             instance = new DeviceClient(context.getApplicationContext());
         }
+        Log.i(TAG,"get device client");
         return instance;
     }
 
@@ -37,11 +40,16 @@ public class DeviceClient {
 
     private DeviceClient(Context context){
         this.context = context;
-        googleApiClient = new GoogleApiClient.Builder(context).addApi(Wearable.API).build();
+        googleApiClient = new GoogleApiClient.Builder(context).addApi(Wearable.API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
         executorService = Executors.newCachedThreadPool();
+        googleApiClient.connect();
     }
 
     public void sendSensorData(final SensorData data){
+        Log.i(TAG,"send sensor data");
         executorService.submit(new Runnable() {
             @Override
             public void run() {
@@ -64,5 +72,21 @@ public class DeviceClient {
                     }
                 });
         Log.i(TAG, "send sensor data");
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        Log.i(TAG, "google api connected");
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        Log.i(TAG, "google api connection suspended");
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult result) {
+        Log.i(TAG, "google api connect failed");
+        Log.i(TAG, result.toString());
     }
 }

@@ -1,1 +1,1 @@
-include ':app', ':sensordatalog'
+include ':app', ':sensordatalog', ':sensorlog'

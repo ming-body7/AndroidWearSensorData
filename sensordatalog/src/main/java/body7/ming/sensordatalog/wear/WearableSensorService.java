@@ -5,12 +5,8 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.net.Uri;
 import android.util.Log;
 
-import com.google.android.gms.wearable.DataEvent;
-import com.google.android.gms.wearable.DataEventBuffer;
-import com.google.android.gms.wearable.DataItem;
 import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.WearableListenerService;
 
@@ -40,10 +36,12 @@ public class WearableSensorService extends WearableListenerService implements Se
         super.onCreate();
         mDeviceClient = DeviceClient.getInstance(this);
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-
+        addSensorListener();
+        Log.i(TAG,"Service created and listener added");
     }
 
-    @Override
+
+    /*@Override
     public void onDataChanged(DataEventBuffer dataEvents) {
         super.onDataChanged(dataEvents);
 
@@ -54,7 +52,7 @@ public class WearableSensorService extends WearableListenerService implements Se
                 String path = uri.getPath();
             }
         }
-    }
+    }*/
 
 
     //message api send control information and data api sync log data
@@ -79,6 +77,7 @@ public class WearableSensorService extends WearableListenerService implements Se
     @Override
     public void onSensorChanged(SensorEvent event) {
         SensorData sensorData = new SensorData(event);
+        Log.i(TAG,"new sensor event");
         mDeviceClient.sendSensorData(sensorData);
     }
 
@@ -87,12 +86,22 @@ public class WearableSensorService extends WearableListenerService implements Se
 
     }
 
+
+    /***
+     * Service operation
+     */
     private void addSensorListener(){
         for(Sensor s : listenedSensorList){
             mSensorManager.registerListener(this,
                     mSensorManager.getDefaultSensor(s.getType()),
                     SensorManager.SENSOR_DELAY_NORMAL);
         }
+
+        //test code
+        mSensorManager.registerListener(this,
+                mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
+                SensorManager.SENSOR_DELAY_NORMAL);
+        Log.i(TAG,"add accelerometer sensor listener");
     }
 
     private void deleteSensorListener(){
@@ -100,5 +109,9 @@ public class WearableSensorService extends WearableListenerService implements Se
     }
     private void clearSensorListener(){
 
+    }
+
+    public void endService(){
+        stopSelf();
     }
 }
